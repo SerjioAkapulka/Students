@@ -10,8 +10,15 @@ import java.util.regex.Pattern;
 
 public class Menu {
 
+    private static final String namePattern = "^[\\p{L} .'-]+$";
     Map<String, List<Integer>> students = new HashMap<>();
-    String namePattern = "^[\\p{L} .'-]+$";
+
+    public Menu(Map<String, List<Integer>> students) {
+        this.students = students;
+    }
+
+    public Menu() {
+    }
 
     public void removeStudent(String name) {
         students.entrySet().removeIf(entry -> entry.getKey().equals(name));
@@ -46,7 +53,7 @@ public class Menu {
             try {
                 grade = Integer.parseInt(gradeWord);
             } catch (Exception ex) {
-                System.out.println("grades must be 2,3,4 or 5");
+                System.out.println("incorrect input");
             }
             if (grade >= 2 && grade <= 5)
                 list.add(grade);
@@ -57,12 +64,5 @@ public class Menu {
 
     public void addStudent(String name, List<Integer> list) {
         students.put(name, list);
-    }
-
-    public Menu(Map<String, List<Integer>> students) {
-        this.students = students;
-    }
-
-    public Menu() {
     }
 }

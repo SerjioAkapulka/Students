@@ -38,7 +38,7 @@ public class Main {
         int count = 0;
         try {
             count = Integer.parseInt(scanner.nextLine());
-        } catch (Exception ex) {
+        } catch (NumberFormatException ex) {
             System.out.println("Введите число от 1 до 100 включительно");
         }
             if (count <= 0 || count >= 100) {

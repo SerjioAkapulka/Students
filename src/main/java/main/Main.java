@@ -19,14 +19,18 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Если вы хотите использовать сохраненный файл введите 1, если вы хотите создать новый файл - введите 2");
         Scanner scanner = new Scanner(System.in);
-        String input = scanner.nextLine();
-        if (Integer.parseInt(input) == 1) {
-            HashMap<String, List<Integer>> students = readFromFile(); // данные из файла записываются в мапу
-            Menu menu = new Menu(students);
-            operate(scanner, menu);
-        } else if (Integer.parseInt(input) == 2) {
-            operate(scanner, new Menu());
-        } else throw new OperationMainException("Illegal input for file operation");
+        try {
+            String input = scanner.nextLine();
+            if (Integer.parseInt(input) == 1) {
+                HashMap<String, List<Integer>> students = readFromFile(); // данные из файла записываются в мапу
+                Menu menu = new Menu(students);
+                operate(scanner, menu);
+            } else if (Integer.parseInt(input) == 2) {
+                operate(scanner, new Menu());
+            } else throw new OperationMainException("Illegal input for file operation");
+        } catch (NumberFormatException ex) {
+            System.out.println("Illegal input for file operation");
+        }
     }
 
     private static void operate(Scanner scanner, Menu menu) { // преамбула для интерфейса
@@ -34,12 +38,12 @@ public class Main {
         int count = 0;
         try {
             count = Integer.parseInt(scanner.nextLine());
-            if (count <= 0) {
-                throw new OperationMainException("Кол-во операций должно быть больше 0");
-            }
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            System.out.println("Введите число от 1 до 100 включительно");
         }
+            if (count <= 0 || count >= 100) {
+                throw new OperationMainException("Кол-во операций должно быть больше 0 и меньше 100");
+            }
         while (count > 0) {
             try {
                 getMenu(menu);                               //вызов интерфейса для пользователя
@@ -103,9 +107,14 @@ public class Main {
         System.out.println("3 - обновить оценку ученика");
         System.out.println("4 - просмотреть оценки всех учащихся");
         System.out.println("5 - просмотреть оценки конкретного учащегося");
+        int option = 0;
         Scanner scanner = new Scanner(System.in);
-        String input = scanner.nextLine();
-        int option = Integer.parseInt(input);
+        try {
+            String input = scanner.nextLine();
+            option = Integer.parseInt(input);
+        } catch (Exception ex) {
+            System.out.println("Введите число от 1 до 5 включительно");
+        }
         switch (option) {
             case 1 -> {
                 String name = getStudentName(scanner, menu);

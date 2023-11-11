@@ -13,7 +13,6 @@ import java.util.Scanner;
 public class Main {
     public static final String pathFile = "C:\\Users\\Sergey\\Desktop\\note.txt";
 
-
     public static void main(String[] args) {
         System.out.println("Если вы хотите использовать сохраненный файл введите 1, если вы хотите создать новый файл - введите 2");
         Scanner scanner = new Scanner(System.in);

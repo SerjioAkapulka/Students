@@ -53,7 +53,6 @@ public class Main {
         if (Integer.parseInt(input) == 1) {
             try {
                 writeToFile(menu);
-                System.out.println();
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());
             }
@@ -64,7 +63,7 @@ public class Main {
         try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Main.pathFile), StandardCharsets.UTF_8))) {
             menu.students.forEach((key, value) -> {
                 try {
-                    writer.write(key + DATA_SEPARATOR + value);
+                    writer.write(key + DATA_SEPARATOR + value + System.lineSeparator());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -81,6 +80,7 @@ public class Main {
         try (BufferedReader reader = new BufferedReader(new FileReader(pathFile))) {
             String line = reader.readLine();
             while (line != null) {
+                line = line.replaceAll("\\[(.*?)\\]", "$1");
                 String[] words = line.split(" ");
                 String[] numbers = (words[1].split(","));
                 for (String s : numbers) {

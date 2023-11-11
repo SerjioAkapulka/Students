@@ -1,5 +1,6 @@
 package main;
 
+import main.exceptions.CustomException;
 import main.exceptions.OperationMainException;
 
 import java.io.*;
@@ -15,7 +16,7 @@ public class Main {
     public static final String DATA_SEPARATOR = " ";
 
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         System.out.println("Если вы хотите использовать сохраненный файл введите 1, если вы хотите создать новый файл - введите 2");
         Scanner scanner = new Scanner(System.in);
         String input = scanner.nextLine();
@@ -28,7 +29,7 @@ public class Main {
         } else throw new OperationMainException("Illegal input for file operation");
     }
 
-    private static void operate(Scanner scanner, Menu menu) throws IOException { // преамбула для интерфейса
+    private static void operate(Scanner scanner, Menu menu) { // преамбула для интерфейса
         System.out.println("Введите количество операций, которое необходимо совершить");
         int count = 0;
         try {
@@ -51,7 +52,7 @@ public class Main {
         String input = scanner.nextLine();
         if (Integer.parseInt(input) == 1) {
             try {
-                writeToFile(pathFile, menu);
+                writeToFile(menu);
                 System.out.println();
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());
@@ -59,8 +60,8 @@ public class Main {
         }
     }
 
-    private static void writeToFile(String pathFile, Menu menu) {
-        try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pathFile), StandardCharsets.UTF_8))) {
+    private static void writeToFile(Menu menu) {
+        try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Main.pathFile), StandardCharsets.UTF_8))) {
             menu.students.forEach((key, value) -> {
                 try {
                     writer.write(key + DATA_SEPARATOR + value);
@@ -132,13 +133,13 @@ public class Main {
         }
     }
 
-    private static List<Integer> getStudentsGrades(Scanner scanner, Menu menu) throws Exception {
+    private static List<Integer> getStudentsGrades(Scanner scanner, Menu menu) throws CustomException {
         System.out.println("Введите оценки ученика без пробелов через запятую");
         String inputStudentGrades = scanner.nextLine();
         return menu.processStudentGrades(inputStudentGrades);
     }
 
-    private static String getStudentName(Scanner scanner, Menu menu) throws Exception {
+    private static String getStudentName(Scanner scanner, Menu menu) throws CustomException {
         System.out.println(inputStudent);
         String inputStudent = scanner.nextLine();
         return menu.processStudentName(inputStudent);

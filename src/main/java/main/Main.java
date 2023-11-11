@@ -60,8 +60,7 @@ public class Main {
     }
 
     private static void writeToFile(String pathFile, Menu menu) {
-        try {
-            Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pathFile), StandardCharsets.UTF_8));
+        try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pathFile), StandardCharsets.UTF_8))) {
             menu.students.forEach((key, value) -> {
                 try {
                     writer.write(key + DATA_SEPARATOR + value);
@@ -70,82 +69,78 @@ public class Main {
                 }
             });
             writer.flush();
-            writer.close();
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
     }
 
-        private static HashMap<String, List<Integer>> readFromFile() {
-            HashMap<String, List<Integer>> students = new HashMap<>();
-            List<Integer> list = new ArrayList<>();
-            try {
-                File file = new File(pathFile);
-                FileReader fr = new FileReader(file);
-                BufferedReader reader = new BufferedReader(fr);
-                String line = reader.readLine();
-                while (line != null) {
-                    String[] words = line.split(" ");
-                    String[] numbers = (words[1].split(","));
-                    for (String s : numbers) {
-                        int num = Integer.parseInt(s);
-                        list.add(num);
-                    }
-                    students.put(words[0], list);
-                    list = new ArrayList<>();
-                    line = reader.readLine();
+    private static HashMap<String, List<Integer>> readFromFile() {
+        HashMap<String, List<Integer>> students = new HashMap<>();
+        List<Integer> list = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(pathFile))) {
+            String line = reader.readLine();
+            while (line != null) {
+                String[] words = line.split(" ");
+                String[] numbers = (words[1].split(","));
+                for (String s : numbers) {
+                    int num = Integer.parseInt(s);
+                    list.add(num);
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+                students.put(words[0], list);
+                list = new ArrayList<>();
+                line = reader.readLine();
             }
-            return students;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        return students;
+    }
 
-        private static void getMenu (Menu menu) throws Exception {
-            System.out.println("1 - добавить нового ученика");
-            System.out.println("2 - удалить ученика");
-            System.out.println("3 - обновить оценку ученика");
-            System.out.println("4 - просмотреть оценки всех учащихся");
-            System.out.println("5 - просмотреть оценки конкретного учащегося");
-            Scanner scanner = new Scanner(System.in);
-            String input = scanner.nextLine();
-            int option = Integer.parseInt(input);
-            switch (option) {
-                case 1 -> {
-                    String name = getStudentName(scanner, menu);
-                    List<Integer> list = getStudentsGrades(scanner, menu);
-                    menu.addStudent(name, list);
-                    System.out.println("Student was added");
-                }
-                case 2 -> {
-                    String name = getStudentName(scanner, menu);
-                    menu.removeStudent(name);
-                    System.out.println("Student was deleted or never existed");
-                }
-                case 3 -> {
-                    String name = getStudentName(scanner, menu);
-                    List<Integer> list = getStudentsGrades(scanner, menu);
-                    menu.renewStudent(name, list);
-                    System.out.println("Student was updated");
-                }
-                case 4 -> System.out.println(menu.browseAllStudents());
-                case 5 -> {
-                    String name = getStudentName(scanner, menu);
-                    System.out.println(menu.browseStudent(name));
-                }
-                default -> throw new OperationMainException("Illegal option");
+    private static void getMenu(Menu menu) throws Exception {
+        System.out.println("1 - добавить нового ученика");
+        System.out.println("2 - удалить ученика");
+        System.out.println("3 - обновить оценку ученика");
+        System.out.println("4 - просмотреть оценки всех учащихся");
+        System.out.println("5 - просмотреть оценки конкретного учащегося");
+        Scanner scanner = new Scanner(System.in);
+        String input = scanner.nextLine();
+        int option = Integer.parseInt(input);
+        switch (option) {
+            case 1 -> {
+                String name = getStudentName(scanner, menu);
+                List<Integer> list = getStudentsGrades(scanner, menu);
+                menu.addStudent(name, list);
+                System.out.println("Student was added");
             }
-        }
-
-        private static List<Integer> getStudentsGrades (Scanner scanner, Menu menu) throws Exception {
-            System.out.println("Введите оценки ученика без пробелов через запятую");
-            String inputStudentGrades = scanner.nextLine();
-            return menu.processStudentGrades(inputStudentGrades);
-        }
-
-        private static String getStudentName (Scanner scanner, Menu menu) throws Exception {
-            System.out.println(inputStudent);
-            String inputStudent = scanner.nextLine();
-            return menu.processStudentName(inputStudent);
+            case 2 -> {
+                String name = getStudentName(scanner, menu);
+                menu.removeStudent(name);
+                System.out.println("Student was deleted or never existed");
+            }
+            case 3 -> {
+                String name = getStudentName(scanner, menu);
+                List<Integer> list = getStudentsGrades(scanner, menu);
+                menu.renewStudent(name, list);
+                System.out.println("Student was updated");
+            }
+            case 4 -> System.out.println(menu.browseAllStudents());
+            case 5 -> {
+                String name = getStudentName(scanner, menu);
+                System.out.println(menu.browseStudent(name));
+            }
+            default -> throw new OperationMainException("Illegal option");
         }
     }
+
+    private static List<Integer> getStudentsGrades(Scanner scanner, Menu menu) throws Exception {
+        System.out.println("Введите оценки ученика без пробелов через запятую");
+        String inputStudentGrades = scanner.nextLine();
+        return menu.processStudentGrades(inputStudentGrades);
+    }
+
+    private static String getStudentName(Scanner scanner, Menu menu) throws Exception {
+        System.out.println(inputStudent);
+        String inputStudent = scanner.nextLine();
+        return menu.processStudentName(inputStudent);
+    }
+}

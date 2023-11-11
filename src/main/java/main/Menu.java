@@ -41,8 +41,13 @@ public class Menu {
     public List<Integer> processStudentGrades(String input4) throws CustomException {
         ArrayList<Integer> list = new ArrayList<>();
         String[] words = input4.split(",");
+        int grade = 0;
         for (String gradeWord : words) {
-            int grade = Integer.parseInt(gradeWord);
+            try {
+                grade = Integer.parseInt(gradeWord);
+            } catch (Exception ex) {
+                System.out.println("grades must be 2,3,4 or 5");
+            }
             if (grade >= 2 && grade <= 5)
                 list.add(grade);
             else throw new CustomException("grades must be 2,3,4 or 5");

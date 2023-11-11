@@ -65,4 +65,12 @@ public class Menu {
     public void addStudent(String name, List<Integer> list) {
         students.put(name, list);
     }
+
+    public Map<String, List<Integer>> getStudents() {
+        return students;
+    }
+
+    public void setStudents(Map<String, List<Integer>> students) {
+        this.students = students;
+    }
 }

@@ -2,10 +2,10 @@ package main;
 
 import main.exceptions.CustomException;
 import main.exceptions.OperationMainException;
-
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
+import main.reader.CustomReader;
+import main.reader.CustomReaderImpl;
+import main.writer.CustomWriter;
+import main.writer.CustomWriterImpl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
@@ -13,16 +13,16 @@ import java.util.Scanner;
 public class Main {
     public static final String inputStudent = "Введите имя ученика и нажмите ввод";
     public static final String pathFile = "C:\\Users\\Sergey\\Desktop\\note.txt";
-    public static final String DATA_SEPARATOR = " ";
 
 
     public static void main(String[] args) {
         System.out.println("Если вы хотите использовать сохраненный файл введите 1, если вы хотите создать новый файл - введите 2");
         Scanner scanner = new Scanner(System.in);
+        CustomReader customReader = new CustomReaderImpl();
         try {
             String input = scanner.nextLine();
             if (Integer.parseInt(input) == 1) {
-                HashMap<String, List<Integer>> students = readFromFile(); // данные из файла записываются в мапу
+                HashMap<String, List<Integer>> students = customReader.readFromFile(pathFile); // данные из файла записываются в мапу
                 Menu menu = new Menu(students);
                 operate(scanner, menu);
             } else if (Integer.parseInt(input) == 2) {
@@ -35,6 +35,7 @@ public class Main {
 
     private static void operate(Scanner scanner, Menu menu) { // преамбула для интерфейса
         System.out.println("Введите количество операций, которое необходимо совершить");
+        CustomWriter customWriter = new CustomWriterImpl();
         int count = 0;
         try {
             count = Integer.parseInt(scanner.nextLine());
@@ -56,49 +57,11 @@ public class Main {
         String input = scanner.nextLine();
         if (Integer.parseInt(input) == 1) {
             try {
-                writeToFile(menu);
+                customWriter.writeToFile(menu);
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());
             }
         }
-    }
-
-    private static void writeToFile(Menu menu) {
-        try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Main.pathFile), StandardCharsets.UTF_8))) {
-            menu.students.forEach((key, value) -> {
-                try {
-                    writer.write(key + DATA_SEPARATOR + value + System.lineSeparator());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-            writer.flush();
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
-    }
-
-    private static HashMap<String, List<Integer>> readFromFile() {
-        HashMap<String, List<Integer>> students = new HashMap<>();
-        List<Integer> list = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(pathFile))) {
-            String line = reader.readLine();
-            while (line != null) {
-                line = line.replaceAll("\\[(.*?)\\]", "$1");
-                String[] words = line.split(" ");
-                String[] numbers = (words[1].split(","));
-                for (String s : numbers) {
-                    int num = Integer.parseInt(s);
-                    list.add(num);
-                }
-                students.put(words[0], list);
-                list = new ArrayList<>();
-                line = reader.readLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return students;
     }
 
     private static void getMenu(Menu menu) throws Exception {

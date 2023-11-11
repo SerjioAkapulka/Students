@@ -73,4 +73,5 @@ public class Menu {
     public void setStudents(Map<String, List<Integer>> students) {
         this.students = students;
     }
+
 }

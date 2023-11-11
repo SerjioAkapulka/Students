@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class CustomReaderImpl implements CustomReader{
+public class CustomReaderImpl implements CustomReader {
     @Override
     public HashMap<String, List<Integer>> readFromFile(String pathFile) {
         HashMap<String, List<Integer>> students = new HashMap<>();
